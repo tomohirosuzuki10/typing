@@ -1,4 +1,14 @@
+// ===== 単語データ =====
+// ジャンルごとに配列で管理するオブジェクト。
+// script.js から wordList["git"] のように取り出して使う。
+//
+// 各要素はオブジェクト（{}）で、2つのプロパティを持つ：
+//   word → タイピングする単語
+//   desc → 画面上部に表示する説明文
+
 const wordList = {
+
+  // ----- Git -----
   git: [
     { word: "git init",        desc: "リポジトリを新規作成する" },
     { word: "git clone",       desc: "リモートリポジトリをローカルにコピー" },
@@ -31,6 +41,8 @@ const wordList = {
     { word: "git submodule",   desc: "別リポジトリをサブモジュールとして管理" },
     { word: "git worktree",    desc: "1リポジトリで複数のワーキングツリーを使う" },
   ],
+
+  // ----- Linux -----
   linux: [
     { word: "ls -la",       desc: "隠しファイル含む詳細一覧を表示" },
     { word: "cd ..",        desc: "1つ上のディレクトリに移動" },
@@ -63,6 +75,8 @@ const wordList = {
     { word: "netstat",      desc: "ネットワーク接続・ポートの状態を確認" },
     { word: "sudo",         desc: "管理者権限でコマンドを実行" },
   ],
+
+  // ----- Java -----
   java: [
     { word: "public static void main", desc: "Javaプログラムのエントリーポイント" },
     { word: "System.out.println",      desc: "標準出力に1行表示する" },
@@ -95,6 +109,8 @@ const wordList = {
     { word: "Arrays.sort()",           desc: "配列を昇順にソートする" },
     { word: "Collections.sort()",      desc: "リストを昇順にソートする" },
   ],
+
+  // ----- SQL -----
   sql: [
     { word: "SELECT * FROM",  desc: "テーブルから全列を取得する" },
     { word: "WHERE",          desc: "取得する行を条件で絞り込む" },
@@ -127,6 +143,8 @@ const wordList = {
     { word: "LIMIT",          desc: "取得件数の上限を指定" },
     { word: "LIKE",           desc: "パターンマッチングで文字列を検索" },
   ],
+
+  // ----- コマンド全般（npm / Docker）-----
   command: [
     { word: "npm install",        desc: "package.jsonの依存パッケージをインストール" },
     { word: "npm run build",      desc: "プロジェクトをプロダクション向けにビルド" },
@@ -139,6 +157,8 @@ const wordList = {
     { word: "docker exec -it",    desc: "実行中のコンテナ内でコマンドを実行" },
     { word: "docker-compose up",  desc: "複数コンテナをまとめて起動する" },
   ],
+
+  // ----- JS / プログラミング -----
   programming: [
     { word: "async",            desc: "非同期関数を定義するキーワード" },
     { word: "await",            desc: "Promiseの結果が返るまで処理を待つ" },

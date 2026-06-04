@@ -1,76 +1,94 @@
+/* ===== リセット =====
+   すべての要素のデフォルト余白をゼロにする。
+   ブラウザごとのデフォルトスタイルのズレをなくすための定番テクニック。
+   * はすべての要素に適用、::before / ::after は疑似要素にも適用 */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ===== CSS変数（カラーパレット） =====
+   :root に書くとページ全体で使える変数になる。
+   色を1か所で管理できるので、テーマ変更が楽になる。
+   使うときは var(--変数名) と書く */
 :root {
-  --bg: #0d1117;
-  --surface: #161b22;
-  --border: #30363d;
-  --text: #c9d1d9;
-  --text-muted: #8b949e;
-  --green: #3fb950;
-  --red: #f85149;
-  --yellow: #d29922;
-  --blue: #58a6ff;
-  --accent: #238636;
+  --bg:         #0d1117; /* ページ背景（ほぼ黒） */
+  --surface:    #161b22; /* カード・入力欄の背景（少し明るい黒） */
+  --border:     #30363d; /* 枠線の色（グレー） */
+  --text:       #c9d1d9; /* メインテキスト（薄白） */
+  --text-muted: #8b949e; /* サブテキスト（グレー） */
+  --green:      #3fb950; /* 正解・正答数（緑） */
+  --red:        #f85149; /* ミス・エラー（赤） */
+  --yellow:     #d29922; /* タイマー（黄） */
+  --blue:       #58a6ff; /* アクセント・リンク（青） */
+  --accent:     #238636; /* ボタン背景（濃い緑） */
 }
 
+/* ===== body：ページ全体の基本スタイル ===== */
 body {
   background: var(--bg);
   color: var(--text);
+  /* モノスペースフォント（等幅）。コードっぽい見た目にするため。
+     フォントがなければ次のフォントを試す（フォールバック） */
   font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
-  min-height: 100vh;
-  display: flex;
+  min-height: 100vh;   /* ビューポートの高さいっぱいに広げる */
+  display: flex;       /* 子要素（header・screen）を縦に並べる */
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* 横方向を中央揃え */
 }
 
+/* ===== ヘッダー ===== */
 header {
   width: 100%;
-  max-width: 720px;
+  max-width: 720px;    /* 広すぎないよう最大幅を制限 */
   padding: 1.5rem 2rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; /* タイトルとselectを両端に配置 */
   border-bottom: 1px solid var(--border);
 }
 
 header h1 {
   font-size: 1.25rem;
   color: var(--blue);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.05em; /* 文字間隔を少し広げてタイトルらしく */
 }
 
+/* ジャンル選択ドロップダウン */
 #genre-select {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 0.4rem 0.75rem;
-  font-family: inherit;
+  font-family: inherit; /* bodyのフォントを引き継ぐ */
   font-size: 0.85rem;
-  cursor: pointer;
+  cursor: pointer;      /* マウスをポインターに変える */
 }
 
-/* 画面切り替え */
+/* ===== 画面切り替えの仕組み =====
+   .screen は全部 display:none で非表示にしておく。
+   JSが .active クラスを追加した画面だけ display:flex で表示される。
+   これで「画面の切り替え」を実現している */
 .screen {
-  display: none;
+  display: none;       /* デフォルトは非表示 */
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
   max-width: 720px;
   padding: 3rem 2rem;
-  gap: 2rem;
-  flex: 1;
+  gap: 2rem;           /* 子要素の間のすき間 */
+  flex: 1;             /* 残りの高さを全部使う（縦中央揃えのため） */
 }
+/* .active がついた .screen だけ表示する */
 .screen.active { display: flex; }
 
-/* スタート画面 */
+/* ===== スタート画面 ===== */
 .description {
   color: var(--text-muted);
   text-align: center;
-  line-height: 1.8;
+  line-height: 1.8; /* 行間を広げて読みやすく */
 }
 
+/* 共通ボタンスタイル（スタート・終了・もう一度で使い回す） */
 .btn-primary {
   background: var(--accent);
   color: #fff;
@@ -80,15 +98,18 @@ header h1 {
   font-family: inherit;
   font-size: 1rem;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s; /* hover時の不透明度変化をなめらかにする */
 }
+/* :hover → マウスが乗ったときだけ適用される */
 .btn-primary:hover { opacity: 0.85; }
 
-/* プレイ中画面 */
+/* ===== プレイ中画面 ===== */
+
+/* ステータスバー（タイマー・正答数・ミス数の横並びエリア） */
 .status-bar {
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-around; /* 3つを等間隔に並べる */
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -96,10 +117,12 @@ header h1 {
   font-size: 1rem;
 }
 
-#timer { color: var(--yellow); }
+/* 各ステータスの色。idセレクタで個別に色を指定 */
+#timer        { color: var(--yellow); }
 #correct-count { color: var(--green); }
-#miss-count { color: var(--red); }
+#miss-count   { color: var(--red); }
 
+/* 問題表示エリア全体 */
 .word-area {
   width: 100%;
   background: var(--surface);
@@ -115,9 +138,11 @@ header h1 {
   gap: 1rem;
 }
 
+/* 問題の説明文バッジ（「リポジトリを新規作成する」など） */
 .word-desc {
   font-size: 0.9rem;
   color: var(--blue);
+  /* rgba() = 色 + 透明度。ここでは青を8%の透明度で背景に使用 */
   background: rgba(88, 166, 255, 0.08);
   border: 1px solid rgba(88, 166, 255, 0.2);
   border-radius: 6px;
@@ -126,22 +151,28 @@ header h1 {
   letter-spacing: 0.02em;
 }
 
+/* 問題の単語本体（薄いグレーで表示） */
 .word-target {
   font-size: 2.5rem;
   letter-spacing: 0.08em;
   color: var(--text-muted);
 }
 
+/* 入力中の進捗表示（文字を1文字ずつ色分けする） */
 .word-progress {
   font-size: 2.5rem;
   letter-spacing: 0.08em;
   min-height: 3rem;
 }
 
+/* 正しく打った文字 → 緑 */
 .word-progress .correct { color: var(--green); }
+/* 次に打つ文字（カーソル位置）→ 青い下線 */
 .word-progress .cursor  { color: var(--text); border-bottom: 3px solid var(--blue); }
+/* まだ打っていない文字 → グレー */
 .word-progress .pending { color: var(--text-muted); }
 
+/* テキスト入力欄 */
 #type-input {
   width: 100%;
   background: var(--surface);
@@ -151,35 +182,41 @@ header h1 {
   padding: 0.75rem 1rem;
   font-family: inherit;
   font-size: 1.1rem;
-  outline: none;
+  outline: none;              /* フォーカス時のブラウザデフォルト枠線を消す */
   transition: border-color 0.15s;
 }
+/* フォーカス中（入力中）は枠線を青にする */
 #type-input:focus { border-color: var(--blue); }
+/* JSが .miss クラスを付けたとき（ミスタイプ時）枠線を赤にする */
 #type-input.miss  { border-color: var(--red); }
 
-/* リザルト画面 */
+/* ===== リザルト画面 ===== */
 #screen-result h2 {
   font-size: 1.5rem;
   color: var(--blue);
 }
 
+/* 2列グリッドでスコアカードを並べる */
 .result-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr; /* 2列、各列が同じ幅 */
   gap: 1rem;
   width: 100%;
 }
 
+/* 各スコアカード */
 .result-item {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1.25rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* ラベルと数値を縦に並べる */
   align-items: center;
   gap: 0.5rem;
 }
 
+/* カードのラベル（小さめのグレー文字） */
 .result-item .label { font-size: 0.85rem; color: var(--text-muted); }
+/* カードの数値（大きめの緑文字） */
 .result-item .value { font-size: 2rem; color: var(--green); }
