@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dev Typing</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Dev Typing</h1>
+    <select id="genre-select">
+      <option value="git">Git</option>
+      <option value="linux">Linux</option>
+      <option value="java">Java</option>
+      <option value="sql">SQL</option>
+      <option value="command">コマンド全般</option>
+      <option value="programming">JS / プログラミング</option>
+    </select>
+  </header>
+
+  <!-- スタート画面 -->
+  <div id="screen-start" class="screen active">
+    <p class="description">エンジニア向けタイピングゲーム。<br>プログラミング / コマンド用語で腕試し。</p>
+    <button id="btn-start" class="btn-primary">スタート</button>
+  </div>
+
+  <!-- プレイ中画面 -->
+  <div id="screen-play" class="screen">
+    <div class="status-bar">
+      <span id="timer">⏱ 60秒</span>
+      <span id="correct-count">✓ 0問</span>
+      <span id="miss-count">❌ 0</span>
+    </div>
+    <div class="word-area">
+      <div id="word-desc" class="word-desc"></div>
+      <div id="word-display" class="word-target"></div>
+      <div id="word-progress" class="word-progress"></div>
+    </div>
+    <input id="type-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="ここに入力…">
+  </div>
+
+  <!-- リザルト画面 -->
+  <div id="screen-result" class="screen">
+    <h2>リザルト</h2>
+    <div class="result-grid">
+      <div class="result-item"><span class="label">正答数</span><span id="res-correct" class="value">-</span></div>
+      <div class="result-item"><span class="label">ミス</span><span id="res-miss" class="value">-</span></div>
+      <div class="result-item"><span class="label">WPM</span><span id="res-wpm" class="value">-</span></div>
+      <div class="result-item"><span class="label">正確率</span><span id="res-accuracy" class="value">-</span></div>
+    </div>
+    <button id="btn-retry" class="btn-primary">もう一度</button>
+  </div>
+
+  <script src="words.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
