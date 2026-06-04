@@ -157,12 +157,12 @@ function updateStatus() {
   elMiss.textContent = `❌ ${state.missCount}`;
 }
 
-// --- ゲーム終了 ---
+// --- ゲーム終了（タイムアップ） ---
 function endGame() {
   clearInterval(state.timerInterval);
   state.isPlaying = false;
 
-  const elapsed = (Date.now() - state.startTime) / 1000 / 60; // 分
+  const elapsed = (Date.now() - state.startTime) / 1000 / 60;
   const wpm = elapsed > 0 ? Math.round(state.correctCount / elapsed) : 0;
   const accuracy = state.totalTyped > 0
     ? Math.round(((state.totalTyped - state.missCount) / state.totalTyped) * 100)
@@ -176,6 +176,19 @@ function endGame() {
   showScreen("result");
 }
 
+// --- ゲーム中断してスタート画面に戻る ---
+function abortGame() {
+  clearInterval(state.timerInterval);
+  state.isPlaying = false;
+  showScreen("start");
+}
+
 // --- ボタン ---
 document.getElementById("btn-start").addEventListener("click", startGame);
 document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("btn-end").addEventListener("click", abortGame);
+
+// --- ジャンル変更でリスタート ---
+elGenre.addEventListener("change", () => {
+  if (state.isPlaying) startGame();
+});
