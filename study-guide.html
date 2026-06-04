@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>学習ガイド生成 | Dev Typing</title>
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+    h1 { color: #58a6ff; font-size: 1.4rem; }
+    p  { color: #8b949e; font-size: 0.95rem; text-align: center; line-height: 1.7; }
+    button {
+      background: #238636;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.8rem 2.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    button:hover { opacity: 0.85; }
+    a { color: #58a6ff; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>📘 Dev Typing 学習ガイド</h1>
+  <p>このタイピングアプリで使われているHTML / CSS / JavaScriptを<br>初心者向けにまとめたExcelを生成します。</p>
+  <button onclick="generate()">Excel をダウンロード</button>
+  <a href="index.html">← ゲームに戻る</a>
+
+  <script>
+  function generate() {
+    const wb = XLSX.utils.book_new();
+
+    // ===== 共通ヘルパー =====
+    function addSheet(name, data, colWidths) {
+      const ws = XLSX.utils.aoa_to_sheet(data);
+      ws["!cols"] = colWidths.map(w => ({ wch: w }));
+      XLSX.utils.book_append_sheet(wb, ws, name);
+    }
+
+    // ===== Sheet1: HTMLタグ =====
+    addSheet("1_HTMLタグ", [
+      ["Dev Typing で使われているHTMLタグ一覧"],
+      [],
+      ["タグ", "読み方", "役割", "このプロジェクトでの使用例"],
+      ["<!DOCTYPE html>", "ドックタイプ",   "HTML5文書であることを宣言する",             "index.htmlの1行目に必ず書く"],
+      ["<html>",          "エイチティーエムエル", "ページ全体を囲む大元のタグ",            "lang=\"ja\" で日本語ページと宣言"],
+      ["<head>",          "ヘッド",          "ページの設定情報を書く場所（画面に出ない）", "タイトル・CSSの読み込みを記述"],
+      ["<body>",          "ボディ",          "画面に表示される内容をすべて囲む",          "header・div・scriptなどを入れる"],
+      ["<header>",        "ヘッダー",        "ページ上部のヘッダーエリア",               "タイトルとジャンル選択を配置"],
+      ["<h1> <h2>",       "エイチワン / エイチツー", "見出しテキスト（数字が小さいほど大きい）", "h1=「Dev Typing」 h2=「リザルト」"],
+      ["<div>",           "ディブ",          "ブロック要素をグループ化する万能タグ",       "3つの画面（start/play/result）に使用"],
+      ["<p>",             "パラグラフ",      "段落テキスト",                             "スタート画面の説明文"],
+      ["<button>",        "ボタン",          "クリックできるボタン",                     "スタート・終了・もう一度ボタン"],
+      ["<input>",         "インプット",      "テキスト入力欄",                           "タイピングの入力欄（type-input）"],
+      ["<select>",        "セレクト",        "ドロップダウンの選択ボックス",              "ジャンル選択（genre-select）"],
+      ["<option>",        "オプション",      "<select>の各選択肢",                       "Git / Linux / Java / SQL など"],
+      ["<span>",          "スパン",          "インライン要素をグループ化する",            "タイマー・正答数・ミス数の表示"],
+      ["<link>",          "リンク",          "外部CSSファイルを読み込む",                "href=\"style.css\""],
+      ["<script>",        "スクリプト",      "外部JSファイルを読み込む",                 "src=\"words.js\" src=\"script.js\""],
+    ], [22, 24, 36, 38]);
+
+    // ===== Sheet2: HTML属性 =====
+    addSheet("2_HTML属性", [
+      ["Dev Typing で使われているHTML属性一覧"],
+      [],
+      ["属性名", "どのタグにつける", "役割", "このプロジェクトの例"],
+      ["id",           "ほぼすべて",  "その要素を一意に特定する名前。JSで取得するときに使う",           "id=\"btn-start\"  id=\"timer\""],
+      ["class",        "ほぼすべて",  "CSSやJSで複数要素をグループ化する。空白区切りで複数指定可",     "class=\"screen active\""],
+      ["src",          "script",      "読み込むJSファイルのパス",                                       "src=\"script.js\""],
+      ["href",         "link",        "読み込むCSSファイルのパス",                                      "href=\"style.css\""],
+      ["rel",          "link",        "linkタグの関係性。CSSなら必ず stylesheet",                       "rel=\"stylesheet\""],
+      ["lang",         "html",        "ページの言語。検索エンジンや読み上げソフトが参照する",            "lang=\"ja\""],
+      ["charset",      "meta",        "文字コードの指定。UTF-8が標準",                                  "charset=\"UTF-8\""],
+      ["value",        "option",      "選択されたときにJSに渡される値",                                 "value=\"git\"  value=\"sql\""],
+      ["type",         "input",       "入力欄の種類を指定する",                                         "type=\"text\"（テキスト入力）"],
+      ["placeholder",  "input",       "何も入力していないときに薄く表示されるヒント文",                  "placeholder=\"ここに入力…\""],
+      ["autocomplete", "input",       "ブラウザの自動補完を制御する",                                   "autocomplete=\"off\" でオフ"],
+      ["autocorrect",  "input",       "iOSの自動修正を無効にする",                                      "autocorrect=\"off\""],
+      ["autocapitalize","input",      "iOSの自動大文字化を無効にする",                                  "autocapitalize=\"off\""],
+      ["spellcheck",   "input",       "スペルチェックの赤波線を非表示にする",                           "spellcheck=\"false\""],
+    ], [18, 20, 44, 38]);
+
+    // ===== Sheet3: CSS基礎 =====
+    addSheet("3_CSS基礎", [
+      ["Dev Typing で使われているCSS概念一覧"],
+      [],
+      ["概念", "書き方", "説明", "このプロジェクトの例"],
+      ["タグセレクタ",   "body { }",                   "そのタグ名の要素すべてにスタイルを適用",         "body { background: #0d1117 }"],
+      ["classセレクタ",  ".screen { }",                ".(ドット)+クラス名の要素にスタイルを適用",       ".screen { display: none }"],
+      ["idセレクタ",     "#timer { }",                 "#(ハッシュ)+id名の要素にスタイルを適用",        "#timer { color: var(--yellow) }"],
+      ["CSS変数",        "--変数名: 値",               ":root{}に書いて色などを変数として管理できる",    "--green: #3fb950  --blue: #58a6ff"],
+      ["var()",          "color: var(--green)",         "CSS変数を参照して値を使う",                      "color: var(--text-muted)"],
+      ["display: flex",  "display: flex",               "子要素を横（または縦）に並べるレイアウト",       "header・status-barの横並び"],
+      ["display: grid",  "display: grid",               "格子状に要素を並べるレイアウト",                 "リザルトの2列カード"],
+      ["display: none",  "display: none",               "要素を非表示にする",                             "非アクティブな画面を隠す"],
+      ["justify-content","justify-content: space-around","flex内の横方向の配置を指定",                    "ステータスバーのアイコン等間隔"],
+      ["align-items",    "align-items: center",         "flex内の縦方向の配置を指定",                     "ヘッダーの縦中央揃え"],
+      ["border-radius",  "border-radius: 8px",          "角を丸める",                                     "ボタン・カード・入力欄"],
+      ["transition",     "transition: opacity 0.15s",   "値の変化をアニメーションにする",                 "ボタンhover時のフェード"],
+      ["padding",        "padding: 1rem 2rem",           "要素の内側の余白（上下 左右）",                  "ヘッダー・カードの余白"],
+      ["gap",            "gap: 1rem",                   "flex/gridの子要素間のすき間",                    "画面内のパーツ間のすき間"],
+      [":hover 擬似クラス","button:hover { }",          "マウスが乗ったときだけ適用されるスタイル",       "ボタンの不透明度を下げる"],
+      ["!important的な強さ","class > tag",              "idが最強、次にclass、タグが最弱（詳細度）",       "activeクラスでdisplay:flexを上書き"],
+    ], [20, 28, 40, 36]);
+
+    // ===== Sheet4: JS基礎 =====
+    addSheet("4_JavaScript基礎", [
+      ["Dev Typing で使われているJavaScript基礎"],
+      [],
+      ["概念", "書き方", "説明", "このプロジェクトの例"],
+      ["const",            "const x = 60",               "再代入しない変数。基本これを使う",                      "const GAME_TIME = 60"],
+      ["let",              "let x = 0",                  "あとで値が変わる変数",                                  "let state = { ... }"],
+      ["オブジェクト",     "{ key: value }",             "複数の値をまとめて1つの変数で管理",                     "state = { timeLeft:60, isPlaying:false }"],
+      ["配列",             "[値1, 値2, ...]",             "値を順番に並べたリスト",                                "wordList.git = [ {word:..., desc:...} ]"],
+      ["関数定義",         "function 名前() { }",        "処理をまとめて名前をつける。何度でも呼び出せる",         "function startGame() { }"],
+      ["関数呼び出し",     "startGame()",                "定義した関数を実行する",                                "btn-startクリック時にstartGame()を呼ぶ"],
+      ["if文",             "if (条件) { }",              "条件が true のときだけ処理を実行",                      "if (state.timeLeft <= 0) endGame()"],
+      ["if-else文",        "if (条件) { } else { }",     "条件が false のときは else の中を実行",                 "正解 / ミスの分岐"],
+      ["for文",            "for (let i=0; i<n; i++)",    "指定した回数だけ繰り返す",                              "単語の文字を1文字ずつ処理"],
+      ["アロー関数",       "() => { }",                  "functionの短い書き方。setTimeoutなどによく使う",        "setTimeout(() => ..., 150)"],
+      ["テンプレートリテラル","` 文字${変数} `",         "バッククォートで囲み ${} で変数を埋め込む",             "` ⏱ ${state.timeLeft}秒 `"],
+      ["三項演算子",       "条件 ? 真の値 : 偽の値",     "if-elseを1行で書ける",                                  "wpm = elapsed>0 ? Math.round(...) : 0"],
+      ["Math.random()",    "Math.random()",               "0以上1未満のランダムな小数を返す",                      "ランダムに問題を選ぶ"],
+      ["Math.floor()",     "Math.floor(3.9) → 3",        "小数を切り捨てて整数にする",                            "配列のインデックスを整数にする"],
+      ["Math.round()",     "Math.round(3.5) → 4",        "小数を四捨五入する",                                    "WPM・正確率の小数を丸める"],
+      ["setInterval()",    "setInterval(関数, 1000)",    "指定ミリ秒ごとに関数を繰り返し実行",                    "1秒ごとにtick()でタイマーを減らす"],
+      ["clearInterval()",  "clearInterval(id)",           "setIntervalを止める",                                   "ゲーム終了時・中断時に呼ぶ"],
+      ["Date.now()",       "Date.now()",                  "現在時刻をミリ秒で取得",                                "ゲーム開始時刻を記録してWPM計算"],
+    ], [22, 30, 42, 40]);
+
+    // ===== Sheet5: DOM操作 =====
+    addSheet("5_DOM操作（HTML↔JS）", [
+      ["DOMとは: JavaScriptからHTMLを操作するための仕組み。idを使って要素を取得し、内容やスタイルを変更できる。"],
+      [],
+      ["やること", "書き方", "説明", "このプロジェクトの使用箇所"],
+      ["要素を取得する",      "document.getElementById(\"id名\")",      "HTMLのid属性でJS側から要素を掴む",               "const elTimer = getElementById(\"timer\")"],
+      ["テキストを書き換える","要素.textContent = \"文字\"",            "要素のテキストを変更する（HTMLタグは無効化）",   "elTimer.textContent = `⏱ ${timeLeft}秒`"],
+      ["HTMLを書き換える",    "要素.innerHTML = \"<span>...\"",         "要素の内部HTMLごと書き換える（タグも使える）",  "文字を色分けしてinnerHTMLで描画"],
+      ["クラスを追加",        "要素.classList.add(\"クラス名\")",       "CSSクラスを追加してスタイルを当てる",           "ミス時 elInput.classList.add(\"miss\")"],
+      ["クラスを削除",        "要素.classList.remove(\"クラス名\")",    "CSSクラスを外してスタイルを解除する",           "0.15秒後にclassList.remove(\"miss\")"],
+      ["クラスを切り替える",  "要素.classList.toggle(\"名前\", 条件)",  "条件がtrueでadd、falseでremoveを自動で行う",    "画面切り替えにactiveクラスをtoggle"],
+      ["入力値を取得",        "inputElement.value",                     "inputタグに入力された現在の文字列を取得",       "const typed = e.target.value"],
+      ["入力値をセット",      "inputElement.value = \"\"",              "input欄の内容をJSから変更する",                 "次の問題に移る時に入力欄をクリア"],
+      ["フォーカスを当てる",  "要素.focus()",                           "その要素にキーボード入力が来るようにする",      "ゲーム開始時にtype-inputにfocus()"],
+    ], [22, 40, 42, 42]);
+
+    // ===== Sheet6: イベント =====
+    addSheet("6_イベント（操作→JS）", [
+      ["イベントとは: ユーザーの操作（クリック・入力など）をJSで検知して処理を実行する仕組み"],
+      [],
+      ["イベント名", "いつ発生するか", "書き方", "このプロジェクトの例"],
+      ["click",   "要素をクリックした時",            "要素.addEventListener(\"click\", 関数)",   "スタート・終了・もう一度ボタン"],
+      ["input",   "input欄の内容が変わった時",       "要素.addEventListener(\"input\", 関数)",   "タイピング入力のリアルタイム判定"],
+      ["change",  "selectの選択肢が変わった時",      "要素.addEventListener(\"change\", 関数)",  "ジャンル変更でゲームをリスタート"],
+    ], [16, 28, 44, 36]);
+
+    // ===== Sheet7: ボタン→JS対応表 =====
+    addSheet("7_操作→関数 対応表", [
+      ["ユーザーが何かをしたとき、どのJavaScript関数が呼ばれるかの対応表"],
+      [],
+      ["ユーザーの操作", "HTMLのid", "イベント", "呼ばれる関数", "関数が何をするか"],
+      ["「スタート」ボタンを押す",   "btn-start",   "click",  "startGame()",  "stateを初期化 → 問題を出す → タイマー開始"],
+      ["「終了」ボタンを押す",       "btn-end",     "click",  "abortGame()",  "タイマーを止める → スタート画面に戻る"],
+      ["「もう一度」ボタンを押す",   "btn-retry",   "click",  "startGame()",  "スタートと同じ。スコアをリセットして再開"],
+      ["ジャンルを変更する",         "genre-select","change", "startGame()",  "プレイ中なら即リスタート（中断して新ジャンル開始）"],
+      ["文字を入力する",             "type-input",  "input",  "（inputイベント内）", "正誤を判定 → 正解なら次の問題 / ミスなら赤フラッシュ"],
+      ["（自動）1秒経過するたび",   "―",           "setInterval", "tick()",   "timeLeftを1減らす → 0になったらendGame()"],
+    ], [28, 18, 14, 22, 44]);
+
+    // ===== Sheet8: ファイル構成 =====
+    addSheet("8_ファイル構成と役割", [
+      ["このプロジェクトのファイル構成"],
+      [],
+      ["ファイル名", "種類", "役割"],
+      ["index.html",       "HTML", "ページの骨格。タグで画面の構造を定義する。どのCSS・JSを読み込むかもここに書く"],
+      ["style.css",        "CSS",  "見た目を担当。色・サイズ・レイアウト・アニメーションなど"],
+      ["script.js",        "JS",   "動きを担当。ボタンのイベント、ゲームロジック、DOM操作をすべてここに書く"],
+      ["words.js",         "JS",   "単語データだけを管理するファイル。wordListオブジェクトをscript.jsから使う"],
+      ["study-guide.html", "HTML", "このファイル。学習ガイドのExcelを生成するためだけのページ"],
+      [],
+      ["なぜファイルを分けるのか"],
+      ["役割ごとに分けることで、どこに何が書いてあるかが分かりやすくなる（関心の分離）"],
+      ["HTMLが壊れてもCSS・JSは無事、JSのバグを直すときにHTMLを触らなくていい"],
+      ["words.jsを分けているのは、単語を追加・編集するときにゲームロジックを誤って壊さないため"],
+    ], [22, 8, 68]);
+
+    XLSX.writeFile(wb, "DevTyping_学習ガイド.xlsx");
+  }
+  </script>
+</body>
+</html>
