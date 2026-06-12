@@ -1,4 +1,7 @@
-// ===== 定数 =====
+// ===========================
+// 上部：設定・初期化
+// ===========================
+
 // const = 変更しない値を入れる変数。ゲーム時間は60秒固定
 const GAME_TIME = 60;
 
@@ -42,14 +45,24 @@ const elResMiss      = document.getElementById("res-miss");      // リザルト
 const elResWpm       = document.getElementById("res-wpm");       // リザルト：WPM
 const elResAccuracy  = document.getElementById("res-accuracy");  // リザルト：正確率
 
-// ===== 画面切り替え =====
-// name に "start" / "play" / "result" を渡すと、その画面だけ active クラスがつく
-// classList.toggle(クラス名, 条件) → 条件がtrueならadd、falseならremove
-function showScreen(name) {
-  Object.entries(screens).forEach(([key, el]) => {
-    el.classList.toggle("active", key === name);
-  });
-}
+
+// ===========================
+// 中部：イベントリスナー
+// ===========================
+
+// addEventListener("イベント名", 関数) → ユーザーの操作に関数を紐づける
+document.getElementById("btn-start").addEventListener("click", startGame);  // スタートボタン押下
+document.getElementById("btn-retry").addEventListener("click", startGame);  // もう一度ボタン押下
+document.getElementById("btn-end").addEventListener("click", abortGame);    // 終了ボタン押下
+elInput.addEventListener("input", handleInput);                              // キーボード入力
+elGenre.addEventListener("change", () => {                                   // ジャンル変更 → プレイ中なら即リスタート
+  if (state.isPlaying) startGame();
+});
+
+
+// ===========================
+// 下部：関数の具体的な中身
+// ===========================
 
 // ===== ゲーム開始 =====
 // スタートボタン・もう一度ボタン・ジャンル変更時に呼ばれる
@@ -79,6 +92,15 @@ function startGame() {
   state.timerInterval = setInterval(tick, 1000);
 }
 
+// ===== 画面切り替え =====
+// name に "start" / "play" / "result" を渡すと、その画面だけ active クラスがつく
+// classList.toggle(クラス名, 条件) → 条件がtrueならadd、falseならremove
+function showScreen(name) {
+  Object.entries(screens).forEach(([key, el]) => {
+    el.classList.toggle("active", key === name);
+  });
+}
+
 // ===== タイマー処理（1秒ごとに呼ばれる）=====
 function tick() {
   state.timeLeft -= 1;  // 残り時間を1秒減らす
@@ -105,7 +127,7 @@ function nextWord() {
 
 // ===== キーボード入力の処理 =====
 // input イベント → 入力欄の内容が変わるたびに発火する
-elInput.addEventListener("input", (e) => {
+function handleInput(e) {
   if (!state.isPlaying) return; // ゲーム中でなければ何もしない
 
   const typed    = e.target.value;    // 入力欄の現在の文字列
@@ -139,13 +161,13 @@ elInput.addEventListener("input", (e) => {
     }
   } else {
     // ===== ミスタイプ =====
-    state.missCount++;           // ミス数を加算
+    state.missCount++;               // ミス数を加算
     elInput.value = state.typedText; // 誤入力を取り消す（正しい進捗まで戻す）
-    flashMiss();                 // 赤フラッシュ演出
+    flashMiss();                     // 赤フラッシュ演出
   }
 
   updateStatus(); // ステータスバーを更新
-});
+}
 
 // ===== ミスタイプ演出 =====
 // 入力欄の枠線を一瞬赤くする
@@ -179,14 +201,14 @@ function renderWord() {
   // テンプレートリテラル（`）と ${} で変数を文字列に埋め込む
   elWordDesc.textContent    = state.currentDesc; // 説明文を更新
   elWordDisplay.textContent = word;              // 単語本体を更新
-  elWordProgress.innerHTML  = html;             // 色分けHTMLを流し込む（innerHTMLはタグを有効にする）
+  elWordProgress.innerHTML  = html;              // 色分けHTMLを流し込む（innerHTMLはタグを有効にする）
 }
 
 // ===== ステータスバーの更新 =====
 function updateStatus() {
-  elTimer.textContent        = `⏱ ${state.timeLeft}秒`;
-  elCorrect.textContent      = `✓ ${state.correctCount}問`;
-  elMiss.textContent         = `❌ ${state.missCount}`;
+  elTimer.textContent   = `⏱ ${state.timeLeft}秒`;
+  elCorrect.textContent = `✓ ${state.correctCount}問`;
+  elMiss.textContent    = `❌ ${state.missCount}`;
 }
 
 // ===== ゲーム終了（タイムアップ）=====
@@ -221,14 +243,3 @@ function abortGame() {
   state.isPlaying = false;
   showScreen("start"); // スタート画面に戻る
 }
-
-// ===== イベントリスナーの登録 =====
-// addEventListener("イベント名", 関数) → ユーザーの操作に関数を紐づける
-document.getElementById("btn-start").addEventListener("click", startGame); // スタートボタン押下
-document.getElementById("btn-retry").addEventListener("click", startGame); // もう一度ボタン押下
-document.getElementById("btn-end").addEventListener("click", abortGame);   // 終了ボタン押下
-
-// ジャンル変更（change イベント）→ プレイ中なら即リスタート
-elGenre.addEventListener("change", () => {
-  if (state.isPlaying) startGame();
-});
